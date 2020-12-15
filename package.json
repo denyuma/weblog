@@ -2,7 +2,33 @@
   "name": "weblog",
   "version": "1.0.0",
   "main": "app.js",
+  "scripts": {
+    "gulp": "gulp",
+    "build-dev-ubuntu": "export NODE_ENV=development && gulp",
+    "build-prod-ubuntu": "export NODE_ENV=production && gulp",
+    "build-dev": "set NODE_ENV=development && gulp",
+    "build-prod": "set NODE_ENV=production && gulp",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "repository": "https://github.com/denyuma/weblog.git",
   "author": "necolin",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "del": "^3.0.0",
+    "eslint": "^4.19.1",
+    "gulp": "^3.9.1",
+    "gulp-sass": "^4.0.1",
+    "gulp-uglify": "^3.0.0",
+    "require-dir": "^1.0.0"
+  },
+  "dependencies": {
+    "bootstrap": "^4.1.0",
+    "ejs": "^3.1.5",
+    "express": "^4.16",
+    "font-awesome": "^4.7.0",
+    "jquery": "^3.3.1",
+    "log4js": "^2.5",
+    "popper.js": "^1.14.3",
+    "pug": "^3.0.0"
+  }
 }

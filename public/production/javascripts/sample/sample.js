@@ -1,0 +1,1 @@
+const sample=function(o){o+="hoge",console.log(o)};sample();
