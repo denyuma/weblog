@@ -9,5 +9,11 @@ app.use('/public', express.static(__dirname + '/public/' + (process.env.NODE_ENV
 
 app.use('/', require('./routes/index.js'));
 
+const systemlogger = require('./lib/log/systemlogger.js');
+app.use(systemlogger());
+
+const accessLogger = require('./lib/log/accesslogger.js');
+app.use(accessLogger());
+
 app.listen(3000);
 console.log('listening Port: 3000');
