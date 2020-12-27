@@ -9,7 +9,11 @@ router.get('/*', (req, res, next) => {
     db.collection('posts').findOne({
       url: req.url
     }).then((document) => {
-      res.render('./posts/index.ejs', document);
+      const title = 'weblog';
+      res.render('./posts/index.ejs', {
+        document: document,
+        title: title
+      });
     }).catch((error) => {
       throw error;
     }).then(() => {

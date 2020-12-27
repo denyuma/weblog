@@ -16,14 +16,14 @@
     </div>
     <dl class="row mt-5 mb-5">
       <dt class="col-3">公開日</dt>
-      <dd class="col-9"><%= published.toLocaleString() %></dd>
+      <dd class="col-9"><%= document.published.toLocaleString() %></dd>
       <dt class="col-3">著者</dt>
-      <dd class="col-9"><%= authors %></dd>
+      <dd class="col-9"><%= document.authors %></dd>
       <dt class="col-3">キーワード</dt>
-      <dd class="col-9"><%= keywords %></dd>
+      <dd class="col-9"><%= document.keywords %></dd>
     </dl>
     
-    <p class="lead"> <%= content %> </p>
+    <p class="lead"> <%= document.content %> </p>
 
   </main>
   
