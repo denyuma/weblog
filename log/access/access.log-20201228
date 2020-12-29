@@ -1,0 +1,4 @@
+[2020-12-28T23:06:52.643] [ERROR] access - ::1 - - "GET /starter-template.css HTTP/1.1" 404 159 "http://localhost:8000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"
+[2020-12-28T23:06:52.648] [ERROR] access - ::1 - - "GET /example.css HTTP/1.1" 404 150 "http://localhost:8000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"
+[2020-12-28T23:13:56.775] [ERROR] access - ::1 - - "GET /starter-template.css HTTP/1.1" 404 159 "http://localhost:8000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"
+[2020-12-28T23:13:56.782] [ERROR] access - ::1 - - "GET /example.css HTTP/1.1" 404 150 "http://localhost:8000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"
