@@ -1,34 +1,59 @@
 const router = require('express').Router();
-const  {CONNECTION_URL, OPTIONS, DATABASE} = require('../config/mongodb.config');
+const { CONNECTION_URL, OPTIONS, DATABASE } = require('../config/mongodb.config');
+const { authenticate, authorize } = require('../lib/security/accountcontrol.js');
 const MongoClient = require('mongodb').MongoClient;
 
-router.get('/', (req, res, next) => {
+const tokens = new (require('csrf'))();
+
+router.get('/', authorize('readWrite'), (req, res, next) => {
   res.render('./account/index.ejs');
 });
 
-router.get('/posts/regist', (req, res, next) => {
-  res.render('./account/posts/regist-form.ejs');
+router.get('/login', (req, res, next) => {
+  res.render('./account/login.ejs', { message: req.flash('message') });
 });
 
-router.post('/posts/regist/input', (req, res, next) => {
+router.post('/login', authenticate());
+
+router.get('/posts/regist', authorize('readWrite'), (req, res, next) => {
+  tokens.secret((error, secret) => {
+    const token = tokens.create(secret);
+    req.session._csrf = secret;
+    res.cookie('_csrf', token);
+    res.render('./account/posts/regist-form.ejs');
+  });
+});
+
+router.post('/posts/regist/input', authorize('readWrite'), (req, res, next) => {
   const original = createRegistData(req.body);
   res.render('./account/posts/regist-form.ejs', { original });
 });
 
-router.post('/posts/regist/confirm', (req, res, next) => {
+router.post('/posts/regist/confirm', authorize('readWrite'), (req, res, next) => {
   const original = createRegistData(req.body);
   const errors = validateRegistData(req.body);
   if (errors) {
     res.render('./account/posts/regist-form.ejs', { errors, original });
     return;
   }
-
   res.render('./account/posts/regist-confirm.ejs', { original });
 });
 
-router.post('/posts/regist/execute', (req, res, next) => {
+router.get('/posts/regist/complete', authorize('readWrite'), (req, res, next) => {
+  res.render('./account/posts/regist-complete.ejs');
+});
+
+router.post('/posts/regist/execute', authorize('readWrite'), (req, res, next) => {
+  const secret = req.session._csrf;
+  const token = req.cookies._csrf;
+
+  if (tokens.verify(secret, token) === false) {
+    throw new Error('Invalid Token');
+  }
+
   const original = createRegistData(req.body);
   const errors = validateRegistData(req.body);
+
   if (errors) {
     res.render('./account/posts/regist-form.ejs', { errors, original });
     return;
@@ -39,7 +64,9 @@ router.post('/posts/regist/execute', (req, res, next) => {
     db.collection('posts')
       .insertOne(original)
       .then(() => {
-        res.render('./account/posts/regist-complete.ejs');
+        delete req.session._csrf;
+        res.clearCookie('_csrf');
+        res.redirect('/account/posts/regist/complete');
       }).catch((error) => {
         throw error;
       }).then(() => {
@@ -70,7 +97,7 @@ const validateRegistData = function (body) {
     errors.url = 'URLが未入力です。"/"から始まるURLを入力してください ';
   }
 
-  if (body.url && /^\//.test(body.url) === false ) {
+  if (body.url && /^\//.test(body.url) === false) {
     isValidated = false;
     errors.url = '"/"から始まるURLを入力してください ';
   }
