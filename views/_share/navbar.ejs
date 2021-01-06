@@ -11,5 +11,10 @@
         <a class="nav-link" href="/account">アカウント</a>
       </li>
     </ul>
+    <% if (locals.user) { %>
+    <form class="form-inline mt-2 mt-md-0" method="POST" action="/account/logout">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">ログアウト</button>
+    </form>
+    <% } %>
   </div>
 </nav>

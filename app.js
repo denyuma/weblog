@@ -28,16 +28,65 @@ app.use(session({
 app.use(flash());
 app.use(...accountcontrol.initialize());
 
-app.use('/', require('./routes/index.js'));
-app.use('/posts/', require('./routes/posts.js'));
-app.use('/search/', require('./routes/search.js'));
-app.use('/account/', require('./routes/account.js'));
+app.use('/api', (() => {
+  const router = express.Router();
+  router.use('/posts', require('./api/posts.js'));
+  return router;
+})());
+app.use('/', (() => {
+  const router = express.Router();
+  router.use((req, res, next) => {
+    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+    next();
+  });
+  router.use('/posts/', require('./routes/posts.js'));
+  router.use('/search/', require('./routes/search.js'));
+  router.use('/account/', require('./routes/account.js'));
+  router.use('/', require('./routes/index.js'));
+  return router;
+})());
+
 
 const systemlogger = require('./lib/log/systemlogger.js');
 app.use(systemlogger());
 
 const accessLogger = require('./lib/log/accesslogger.js');
 app.use(accessLogger());
+
+app.use((req, res, next) => {
+  const data = {
+    method: req.method,
+    protocol: req.protocol,
+    version: req.httpVersion,
+    url: req.url
+  };
+  res.status(404);
+  if (req.xhr) {
+    res.json(data);
+  } else {
+    res.render('./404.ejs', { data })
+  }
+});
+
+app.use((err, req, res, next) => {
+  const data = {
+    method: req.method,
+    protocol: req.protocol,
+    version: req.httpVersion,
+    url: req.url,
+    error: process.env.NODE_ENV === 'development' ? {
+      name: err.name,
+      message: err.message,
+      stack: err.stack
+    } : undefined    
+  };
+  res.status(500);
+  if (req.xhr) {
+    res.json(data);
+  } else {
+    res.render('./500.ejs', { data });
+  }
+});
 
 app.listen(8000);
 console.log('listening Port: 8000');

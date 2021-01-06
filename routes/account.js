@@ -15,6 +15,11 @@ router.get('/login', (req, res, next) => {
 
 router.post('/login', authenticate());
 
+router.post('/logout', (req, res, next) => {
+  req.logout();
+  res.redirect('/account/login');
+});
+
 router.get('/posts/regist', authorize('readWrite'), (req, res, next) => {
   tokens.secret((error, secret) => {
     const token = tokens.create(secret);
@@ -75,6 +80,7 @@ router.post('/posts/regist/execute', authorize('readWrite'), (req, res, next) =>
   });
 });
 
+
 const createRegistData = function (body) {
   const datetime = new Date();
   return {
@@ -106,6 +112,8 @@ const validateRegistData = function (body) {
     isValidated = false;
     errors.title = 'タイトルが未入力です。任意のタイトルを入力してください';
   }
+
+  //todo ユーザーIDが被らないようにする
 
   return isValidated ? undefined : errors;
 };
